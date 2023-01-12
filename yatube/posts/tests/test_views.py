@@ -33,18 +33,10 @@ class PostPagesTests(TestCase):
         """URL-адрес использует соответствующий шаблон"""
         templates_pages_names = {
             reverse('posts:index'): 'posts/index.html',
-            reverse('posts:group',
-                    kwargs={'slug': self.group.slug}):
-                    'posts/group_list.html',
-            reverse('posts:profile',
-                    kwargs={'username': self.user.username}):
-                    'posts/profile.html',
-            reverse('posts:post_detail',
-                    kwargs={'post_id': self.post.pk}):
-                    'posts/post_detail.html',
-            reverse('posts:post_edit',
-                    kwargs={'post_id': self.post.id}):
-                    'posts/create_post.html',
+            reverse('posts:group', kwargs={'slug': self.group.slug}): 'posts/group_list.html',
+            reverse('posts:profile', kwargs={'username': self.user.username}): 'posts/profile.html',
+            reverse('posts:post_detail', kwargs={'post_id': self.post.pk}): 'posts/post_detail.html',
+            reverse('posts:post_edit', kwargs={'post_id': self.post.id}): 'posts/create_post.html',
             reverse('posts:post_create'): 'posts/create_post.html',
         }
 
@@ -72,7 +64,9 @@ class PostPagesTests(TestCase):
 class PaginatorViewsTest(TestCase):
     @classmethod
     def setUp(cls):
-        cls.user = User.objects.create_user(username='Author')
+        cls.user = User.objects.create_user(
+            username='Author'
+        )
         cls.group = Group.objects.create(title='Тестовая группа',
                                          slug='test_group',
                                          description='Тестовое описание')

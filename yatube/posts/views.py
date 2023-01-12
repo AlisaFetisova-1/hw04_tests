@@ -17,9 +17,8 @@ def index(request):
 def group_posts(request, slug):
     template = "posts/group_list.html"
     group = get_object_or_404(Group, slug=slug)
-    posts = group.posts.all()[:NUMBER_OF_OBJECTS]
+    posts = group.posts.all()
     context = {'group': group,
-               'posts': posts,
                }
     context.update(get_page_context(posts, request))
     return render(request, template, context)
@@ -33,20 +32,19 @@ def profile(request, username):
     posts = author.posts.all()
     context = {
         'author': author,
-        'posts': posts,
     }
     context.update(get_page_context(posts, request))
     return render(request, 'posts/profile.html', context)
 
 
-def posts_detail(request, post_id):
+def post_detail(request, post_id):
     """Страница для просмотра отдельного поста"""
     """код запроса к модели и создание словаря контекста"""
     post = get_object_or_404(Post, pk=post_id)
     context = {
         'post': post,
     }
-    return render(request, 'posts/posts_detail.html', context)
+    return render(request, 'posts/post_detail.html', context)
 
 
 @login_required

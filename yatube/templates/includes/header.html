@@ -24,7 +24,7 @@
         </li>
         {% if users.is_authenticated %}
         <li class="nav-item"> 
-          <a class="nav-link  {% if view_name  == 'about:tech' %}active{% endif %}" href="{% url 'about:post_detail' %}">Новая запись</a>
+          <a class="nav-link  {% if view_name  == 'about:tech' %}active{% endif %}" href="{% url 'about:create_post' %}">Новая запись</a>
         </li>
         <li class="nav-item"> 
           <a class="nav-link link-light {% if view_name  == 'posts:post_crtate' %}active{% endif %}" href="{% url 'posts:post_crtate' %}">Изменить пароль</a>

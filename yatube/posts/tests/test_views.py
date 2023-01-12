@@ -32,12 +32,16 @@ class PostPagesTests(TestCase):
     def test_pages_uses_correct_template(self):
         """URL-адрес использует соответствующий шаблон"""
         templates_pages_names = {
-            reverse('posts:index'): 'posts/index.html',
-            reverse('posts:group', kwargs={'slug': self.group.slug}): 'posts/group_list.html',
-            reverse('posts:profile', kwargs={'username': self.user.username}): 'posts/profile.html',
-            reverse('posts:post_detail', kwargs={'post_id': self.post.pk}): 'posts/post_detail.html',
-            reverse('posts:post_edit', kwargs={'post_id': self.post.id}): 'posts/create_post.html',
-            reverse('posts:post_create'): 'posts/create_post.html',
+        reverse('posts:index'): 'posts/index.html',
+        reverse('posts:group', 
+                kwargs={'slug': self.group.slug}): 'posts/group_list.html',
+        reverse('posts:profile', 
+                kwargs={'username': self.user.username}): 'posts/profile.html',
+        reverse('posts:post_detail', 
+                kwargs={'post_id': self.post.pk}): 'posts/post_detail.html',
+        reverse('posts:post_edit', 
+                kwargs={'post_id': self.post.id}): 'posts/create_post.html',
+        reverse('posts:post_create'): 'posts/create_post.html',
         }
 
         for reverse_name, template in templates_pages_names.items():
@@ -55,8 +59,8 @@ class PostPagesTests(TestCase):
     def test_profile_page_show_correct_context(self):
         """Шаблон profile сформирован с правильным контекстом."""
         response = self.authorized_client.get(
-        reverse('posts:profile',
-                 kwargs={'username': PostPagesTests.test_user}))
+            reverse('posts:profile',
+                    kwargs={'username': PostPagesTests.test_user}))
         self.assertEqual(response.context['page_obj'][0],
                          PostPagesTests.post)
 

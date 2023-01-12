@@ -46,7 +46,7 @@ class PostPagesTests(TestCase):
                     kwargs={'post_id': self.post.id}):
                     'posts/create_post.html',
             reverse('posts:post_create'): 'posts/create_post.html',
-            }
+        }
 
         for reverse_name, template in templates_pages_names.items():
             """типы полей формы в словаре context соответствуют ожиданиям"""
@@ -64,7 +64,7 @@ class PostPagesTests(TestCase):
         """Шаблон profile сформирован с правильным контекстом."""
         response = self.authorized_client.get(
         reverse('posts:profile',
-                kwargs={'username': PostPagesTests.test_user}))
+                 kwargs={'username': PostPagesTests.test_user}))
         self.assertEqual(response.context['page_obj'][0],
                          PostPagesTests.post)
 
@@ -89,7 +89,7 @@ class PaginatorViewsTest(TestCase):
             reverse('posts:profile',
                     kwargs={'username': 'testUser'}): 'page_obj',
         }
-    
+
     def test_first_page_contains_ten_records(self):
         """Проверка: на второй странице должно быть три поста"""
         for value, expected in self.page_name.items():

@@ -12,13 +12,13 @@ class PostPagesTests(TestCase):
     def setUpClass(cls):
         """Создание записи в БД"""
         super().setUpClass()
-        cls.test_user=User.objects.create_user(username='authorized')
-        cls.group=Group.objects.create(
+        cls.test_user = User.objects.create_user(username='authorized')
+        cls.group = Group.objects.create(
             title='Тестовая группа',
             slug='test_slug',
             description='Тестовое описание',
         )
-        cls.post=Post.objects.create(
+        cls.post = Post.objects.create(
             author=cls.test_user,
             group=cls.group,
             text='Тестовый пост',
@@ -32,15 +32,19 @@ class PostPagesTests(TestCase):
     def test_pages_uses_correct_template(self):
         """URL-адрес использует соответствующий шаблон"""
         templates_pages_names = {
-            reverse('posts:index'):'posts/index.html', 
-            reverse('posts:group', 
-                    kwargs={'slug': self.group.slug}): 'posts/group_list.html',
+            reverse('posts:index'): 'posts/index.html',
+            reverse('posts:group',
+                    kwargs={'slug': self.group.slug}):
+                    'posts/group_list.html',
             reverse('posts:profile',
-                    kwargs={'username': self.user.username}): 'posts/profile.html',
+                    kwargs={'username': self.user.username}):
+                    'posts/profile.html',
             reverse('posts:post_detail',
-                    kwargs={'post_id': self.post.pk}): 'posts/post_detail.html',
+                    kwargs={'post_id': self.post.pk}):
+                    'posts/post_detail.html',
             reverse('posts:post_edit',
-                    kwargs={'post_id': self.post.id}): 'posts/create_post.html',
+                    kwargs={'post_id': self.post.id}):
+                    'posts/create_post.html',
             reverse('posts:post_create'): 'posts/create_post.html',
             }
 

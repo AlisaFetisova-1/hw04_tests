@@ -36,11 +36,14 @@ class PostPagesTests(TestCase):
             reverse('posts:group',
                     kwargs={'slug': self.group.slug}): 'posts/group_list.html',
             reverse('posts:profile',
-                    kwargs={'username': self.user.username}): 'posts/profile.html',
+                    kwargs={'username':
+                            self.user.username}): 'posts/profile.html',
             reverse('posts:post_detail',
-                    kwargs={'post_id': self.post.pk}): 'posts/post_detail.html',
+                    kwargs={'post_id':
+                            self.post.pk}): 'posts/post_detail.html',
             reverse('posts:post_edit',
-                    kwargs={'post_id': self.post.id}): 'posts/create_post.html',
+                    kwargs={'post_id': 
+                            self.post.id}): 'posts/create_post.html',
             reverse('posts:post_create'): 'posts/create_post.html',
         }
 

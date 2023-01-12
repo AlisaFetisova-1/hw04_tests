@@ -1,11 +1,7 @@
-from django import forms
-from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.core.paginator import Page
-from django.test import Client, TestCase, override_settings
+from django.test import Client, TestCase
 from django.urls import reverse
 
-from posts.forms import PostForm
 from posts.models import Group, Post, User
 
 User = get_user_model()

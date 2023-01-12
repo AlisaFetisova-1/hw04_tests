@@ -6,6 +6,7 @@ from ..models import Group, Post
 User = get_user_model()
 NUMBER = 15
 
+
 class PostModelTest(TestCase):
     @classmethod
     def setUpClass(cls):
@@ -21,12 +22,10 @@ class PostModelTest(TestCase):
             text='Тестовый пост',
         )
 
-
     def test_models_have_correct_object_names(self):
-        """Проверяем, что у моделей корректно работает __str__."""
-
+        """Проверяем, что у моделей корректно работает __str__"""
         post = PostModelTest.post
-        expected_object_name_post =' '.join(
+        expected_object_name_post = ' '.join(
             post.text.split()[:NUMBER])
         group = PostModelTest.group
         expected_object_name_group = group.title
@@ -37,4 +36,4 @@ class PostModelTest(TestCase):
         for field, expected_value in test_dict.items():
             with self.subTest(field=field):
                 self.assertEqual(
-                    str(field),expected_value)
+                    str(field), expected_value)

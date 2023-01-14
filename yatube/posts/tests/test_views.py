@@ -65,7 +65,7 @@ class PostPagesTests(TestCase):
                     kwargs={'username': PostPagesTests.user}))
         self.assertEqual(response.context['page_obj'][0],
                          PostPagesTests.post)
-        context_author = response.context.get('author')     
+        context_author = response.context.get('author')  
         self.assertEqual(context_author, self.post.author)
 
     def test_post_detail_page_show_correct_context(self):
@@ -76,7 +76,7 @@ class PostPagesTests(TestCase):
                        response.context['post'].group: self.group,
                        response.context['post'].author: self.user.username}
         for value, expected in post_text_0.items():
-            self.assertEqual(post_text_0[value], expected)    
+            self.assertEqual(post_text_0[value], expected)
 
     def test_paginator(self):
         bulk_posts = []

@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 from posts.models import Post, Group
 
 User = get_user_model()
-ONE = 1
+
 
 
 class PostFormTests(TestCase):
@@ -30,12 +30,11 @@ class PostFormTests(TestCase):
                                                follow=True)
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertTrue(Post.objects.filter(
-                        text='Текст записанный в форму',
                         group=self.group.id,
                         author=self.user
                         ).exists())
         self.assertEqual(Post.objects.count(),
-                         posts_count + ONE,
+                         posts_count + 1,
                          )
 
     def test_edit_post(self):

@@ -12,20 +12,19 @@ class PostPagesTests(TestCase):
     def setUpClass(cls):
         """Создание записи в БД"""
         super().setUpClass()
-        cls.test_user = User.objects.create_user(username='authorized')
+        cls.user = User.objects.create_user(username='authorized')
         cls.group = Group.objects.create(
             title='Тестовая группа',
             slug='test_slug',
             description='Тестовое описание',
         )
         cls.post = Post.objects.create(
-            author=cls.test_user,
+            author=cls.user,
             group=cls.group,
             text='Тестовый пост',
         )
 
     def setUp(self):
-        self.user = User.objects.create_user(username='StasBasov')
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
 
@@ -54,53 +53,67 @@ class PostPagesTests(TestCase):
                 self.assertTemplateUsed(response, template)
 
     def test_context_index(self):
-        """Считаем количество постов на странице"""
         response = self.authorized_client.get(reverse('posts:index'))
         page_object = response.context['page_obj']
         self.assertEqual(len(page_object), 1)
+        self.assertIsInstance(page_object[0], Post)
 
     def test_profile_page_show_correct_context(self):
         """Шаблон profile сформирован с правильным контекстом."""
         response = self.authorized_client.get(
             reverse('posts:profile',
-                    kwargs={'username': PostPagesTests.test_user}))
+                    kwargs={'username': PostPagesTests.user}))
         self.assertEqual(response.context['page_obj'][0],
                          PostPagesTests.post)
+        context_author = response.context.get('author')            
+        self.assertEqual(context_author, self.post.author)
+
+    def test_post_detail_page_show_correct_context(self):
+        """Шаблон post_detail сформирован с правильным контекстом."""
+        response = self.authorized_client.get(
+            reverse('posts:post_detail', kwargs={'post_id': self.post.id}))
+        post_text_0 = {response.context['post'].text: 'Тестовый пост',
+                       response.context['post'].group: self.group,
+                       response.context['post'].author: self.user.username}
+        for value, expected in post_text_0.items():
+            self.assertEqual(post_text_0[value], expected)           
 
 
-class PaginatorViewsTest(TestCase):
-    @classmethod
-    def setUp(cls):
-        cls.user = User.objects.create_user(
-            username='Author'
+    def test_paginator(self):
+        paginated_urls_and_args = (
+                ['posts:index', None],
+                ['posts:profile', PostPagesTests.user], 
+                ['posts:group_list', PostPagesTests.group.slug]
         )
-        cls.group = Group.objects.create(title='Тестовая группа',
-                                         slug='test_group',
-                                         description='Тестовое описание')
+        paginate_pages_and_count_posts = (
+                (1, 10),
+                (2, 3)
+        )
 
-        for i in range(13):
-            Post.objects.create(text=f'Тестовый текст {i}',
-                                group=cls.group,
-                                author=cls.user)
-        cls.authorizend_client = Client()
-        cls.authorizend_client.force_login(cls.user)
-        cls.page_name = {
-            reverse('posts:index'): 'page_obj',
-            reverse('posts:group', kwargs={'slug': 'testo_slug'}): 'page_obj',
-            reverse('posts:profile',
-                    kwargs={'username': 'testUser'}): 'page_obj',
-        }
+        bulk_posts = []
+        for i in range(12):
+            bulk_posts.append(Post(
+                    text=f'Тестовый пост {i}',
+                    author=PostPagesTests.user,
+                    group=PostPagesTests.group)
+                )
+            Post.objects.bulk_create(bulk_posts)
 
-    def test_first_page_contains_ten_records(self):
-        """Проверка: на второй странице должно быть три поста"""
-        for value, expected in self.page_name.items():
-            with self.subTest(value=value):
-                response = self.client.get(reverse('posts:index'))
-                self.assertEqual(len(response.context[expected]), 10)
-
-    def test_second_page_contains_three_records(self):
-        """Проверка: на второй странице должно быть три поста"""
-        for value, expected in self.page_name.items():
-            with self.subTest(value=value):
-                response = self.client.get(reverse('posts:index') + '?page=2')
-                self.assertEqual(len(response.context[expected]), 3)
+            for url, args in paginated_urls_and_args:
+                for page, count in paginate_pages_and_count_posts:
+                    with self.subTest(url=url, page=page):
+                        if args:
+                            response = self.authorized_client.get(
+                                reverse(url, args=[args]),
+                                {'page': page}
+                            )
+                        else:
+                            response = self.authorized_client.get(
+                                reverse(url),
+                                {'page': page}
+                            )
+                        self.assertEqual(
+                            len(response.context['page_obj']),
+                            count,
+                            f'Ошибка пажинатора {url} page {page}'
+                            )

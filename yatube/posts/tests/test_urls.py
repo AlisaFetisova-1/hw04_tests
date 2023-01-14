@@ -1,6 +1,6 @@
-# posts/tests/test_urls.py
 from django.contrib.auth import get_user_model
 from django.test import TestCase, Client
+from http import HTTPStatus
 
 from posts.models import Group, Post
 
@@ -29,7 +29,7 @@ class StaticURLTests(TestCase):
 
     def test_urls_uses_correct_template(self):
         response = self.guest_client.get('/')
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.templates_url_names = {
             '': 'posts/index.html',
             f'/group/{self.group.slug}/': 'posts/group_list.html',
@@ -43,3 +43,21 @@ class StaticURLTests(TestCase):
             with self.subTest(address=address):
                 response = self.authorized_client.get(address)
                 self.assertTemplateUsed(response, template)
+
+    def test_urls_authorized_client(self):
+        """Доступ авторизованного пользователя"""
+        pages: tuple = ('/create/',
+                        f'/posts/{self.post.id}/edit/')
+        for page in pages:
+            response = self.authorized_client.get(page)
+            self.assertEqual(response.status_code, HTTPStatus.OK)
+
+    def test_urls_guest_client(self):
+        """Доступ неавторизованного пользователя"""
+        pages: tuple = ('/',
+                        f'/group/{self.group.slug}/',
+                        f'/profile/{self.user.username}/',
+                        f'/posts/{self.post.id}/')
+        for page in pages:
+            response = self.guest_client.get(page)
+            self.assertEqual(response.status_code, HTTPStatus.OK)

@@ -65,7 +65,7 @@ class PostPagesTests(TestCase):
                     kwargs={'username': PostPagesTests.user}))
         self.assertEqual(response.context['page_obj'][0],
                          PostPagesTests.post)
-        context_author = response.context.get('author')  
+        context_author = response.context.get('author')
         self.assertEqual(context_author, self.post.author)
 
     def test_post_detail_page_show_correct_context(self):

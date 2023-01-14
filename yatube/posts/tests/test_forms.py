@@ -8,7 +8,6 @@ from posts.models import Post, Group
 User = get_user_model()
 
 
-
 class PostFormTests(TestCase):
 
     def setUp(self):
@@ -48,7 +47,7 @@ class PostFormTests(TestCase):
                                            description='Описание')
         form_data = {'text': 'Текст записанный в форму',
                      'group': self.group2.id}
-        posts_count = Post.objects.count()             
+        posts_count = Post.objects.count()        
         response = self.authorized_client.post(
             reverse('posts:post_edit', kwargs={'post_id': old_text.id}),
             data=form_data,
@@ -61,4 +60,5 @@ class PostFormTests(TestCase):
                         ).exists())
         self.assertNotEqual(old_text.text, form_data['text'])
         self.assertNotEqual(old_text.group, form_data['group'])
-        self.assertEqual(Post.objects.count(), posts_count, 'Число постов не изменилось')
+        self.assertEqual(Post.objects.count(), posts_count,
+                         'Число постов не изменилось')

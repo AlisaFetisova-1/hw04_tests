@@ -65,7 +65,7 @@ class PostPagesTests(TestCase):
                     kwargs={'username': PostPagesTests.user}))
         self.assertEqual(response.context['page_obj'][0],
                          PostPagesTests.post)
-        context_author = response.context.get('author')            
+        context_author = response.context.get('author')     
         self.assertEqual(context_author, self.post.author)
 
     def test_post_detail_page_show_correct_context(self):
@@ -76,19 +76,18 @@ class PostPagesTests(TestCase):
                        response.context['post'].group: self.group,
                        response.context['post'].author: self.user.username}
         for value, expected in post_text_0.items():
-            self.assertEqual(post_text_0[value], expected)           
-
+            self.assertEqual(post_text_0[value], expected)    
 
     def test_paginator(self):
         bulk_posts = []
         for i in range(12):
             bulk_posts.append(Post(
-                    text=f'Тестовый пост {i}',
-                    author=PostPagesTests.user,
-                    group=PostPagesTests.group)
-                )
+                text=f'Тестовый пост {i}',
+                author=PostPagesTests.user,
+                group=PostPagesTests.group)
+            )
             Post.objects.bulk_create(bulk_posts)
- 
+
         reverse_name_posts = [
             reverse('posts:index'),
             reverse('posts:profile',
@@ -96,7 +95,7 @@ class PostPagesTests(TestCase):
             reverse('posts:group',
                     kwargs={'slug': f'{self.group.slug}'}),
         ]
- 
+
         for reverse_name in reverse_name_posts:
             with self.subTest(reverse_name=reverse_name):
                 response = self.client.get(reverse_name)

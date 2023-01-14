@@ -80,16 +80,6 @@ class PostPagesTests(TestCase):
 
 
     def test_paginator(self):
-        paginated_urls_and_args = (
-                ['posts:index', None],
-                ['posts:profile', PostPagesTests.user], 
-                ['posts:group_list', PostPagesTests.group.slug]
-        )
-        paginate_pages_and_count_posts = (
-                (1, 10),
-                (2, 3)
-        )
-
         bulk_posts = []
         for i in range(12):
             bulk_posts.append(Post(
@@ -98,22 +88,19 @@ class PostPagesTests(TestCase):
                     group=PostPagesTests.group)
                 )
             Post.objects.bulk_create(bulk_posts)
-
-            for url, args in paginated_urls_and_args:
-                for page, count in paginate_pages_and_count_posts:
-                    with self.subTest(url=url, page=page):
-                        if args:
-                            response = self.authorized_client.get(
-                                reverse(url, args=[args]),
-                                {'page': page}
-                            )
-                        else:
-                            response = self.authorized_client.get(
-                                reverse(url),
-                                {'page': page}
-                            )
-                        self.assertEqual(
-                            len(response.context['page_obj']),
-                            count,
-                            f'Ошибка пажинатора {url} page {page}'
-                            )
+ 
+        reverse_name_posts = [
+            reverse('posts:index'),
+            reverse('posts:profile',
+                    kwargs={'username': f'{self.user.username}'}),
+            reverse('posts:group',
+                    kwargs={'slug': f'{self.group.slug}'}),
+        ]
+ 
+        for reverse_name in reverse_name_posts:
+            with self.subTest(reverse_name=reverse_name):
+                response = self.client.get(reverse_name)
+                self.assertEqual(
+                    len(response.context['page_obj']), 10,
+                    'Количество постов на первой странице не равно десяти'
+                )

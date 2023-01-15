@@ -18,6 +18,7 @@ from django.urls import include, path
 
 
 app_name = 'about'
+handler404 = 'core.views.page_not_found'
 
 urlpatterns = [
     path('', include(

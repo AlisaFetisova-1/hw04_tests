@@ -49,8 +49,12 @@ class StaticURLTests(TestCase):
         pages: tuple = ('/create/',
                         f'/posts/{self.post.id}/edit/')
         for page in pages:
+            response = self.guest_client.get(page)
+            self.assertRedirects = (response, f'/auth/login/?next={page}')
+        for page in pages:
             response = self.authorized_client.get(page)
             self.assertEqual(response.status_code, HTTPStatus.OK)
+            
 
     def test_urls_guest_client(self):
         """Доступ неавторизованного пользователя"""

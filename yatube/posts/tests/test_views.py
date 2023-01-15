@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
 from django.urls import reverse
+from django import forms
 
 from posts.models import Group, Post, User
 
@@ -57,6 +58,17 @@ class PostPagesTests(TestCase):
         page_object = response.context['page_obj']
         self.assertEqual(len(page_object), 1)
         self.assertIsInstance(page_object[0], Post)
+    
+    def test_context_group_posts(self):
+        response = self.authorized_client.get(
+            reverse(
+                'posts:group',
+                kwargs={'slug': PostPagesTests.group.slug}
+            )
+        )
+        page_object = response.context['page_obj']
+        self.assertEqual(len(page_object), 1)
+        self.assertIsInstance(page_object[0], Post)
 
     def test_profile_page_show_correct_context(self):
         """Шаблон profile сформирован с правильным контекстом."""
@@ -77,6 +89,17 @@ class PostPagesTests(TestCase):
                        response.context['post'].author: self.user.username}
         for value, expected in post_text_0.items():
             self.assertEqual(post_text_0[value], expected)
+
+    def test_post_create_page_show_correct_context(self):
+        """Шаблон post_create сформирован с правильным контекстом."""
+        response = self.authorized_client.get(reverse('posts:post_create'))
+        form_fields = {
+            'text': forms.fields.CharField,
+            'group': forms.fields.ChoiceField}
+        for value, expected in form_fields.items():
+            with self.subTest(value=value):
+                form_field = response.context.get('form').fields.get(value)
+                self.assertIsInstance(form_field, expected)
 
     def test_paginator(self):
         bulk_posts = []

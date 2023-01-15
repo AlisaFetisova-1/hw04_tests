@@ -29,6 +29,7 @@ class PostFormTests(TestCase):
                                                follow=True)
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertTrue(Post.objects.filter(
+                        text=form_data["text"],
                         group=self.group.id,
                         author=self.user
                         ).exists())
@@ -61,4 +62,5 @@ class PostFormTests(TestCase):
         self.assertNotEqual(old_text.text, form_data['text'])
         self.assertNotEqual(old_text.group, form_data['group'])
         self.assertEqual(Post.objects.count(), posts_count,
-                         'Число постов не изменилось')
+                         'Число постов не должно меняться'
+                         'при редактировании поста')

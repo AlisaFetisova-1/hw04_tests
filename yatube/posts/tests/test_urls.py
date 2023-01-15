@@ -54,7 +54,6 @@ class StaticURLTests(TestCase):
         for page in pages:
             response = self.authorized_client.get(page)
             self.assertEqual(response.status_code, HTTPStatus.OK)
-            
 
     def test_urls_guest_client(self):
         """Доступ неавторизованного пользователя"""

@@ -1,7 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
 from django.urls import reverse
-from django import forms
 
 from posts.models import Group, Post, User
 from posts.forms import PostForm
@@ -59,7 +58,7 @@ class PostPagesTests(TestCase):
         page_object = response.context['page_obj']
         self.assertEqual(len(page_object), 1)
         self.assertIsInstance(page_object[0], Post)
-    
+
     def test_context_group_posts(self):
         response = self.authorized_client.get(
             reverse(
@@ -95,7 +94,7 @@ class PostPagesTests(TestCase):
         """Шаблон post_create сформирован с правильным контекстом."""
         response = testing_pages = (
             f'/posts/{PostPagesTests.post.pk}/edit/',
-            f'/create/',
+             '/create/',
         )
         for url in testing_pages:
             with self.subTest(url=url):
@@ -113,7 +112,6 @@ class PostPagesTests(TestCase):
                         response.context['post'],
                         PostPagesTests.post
                     )
-                
 
     def test_paginator(self):
         bulk_posts = []

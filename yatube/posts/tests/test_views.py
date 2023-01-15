@@ -94,7 +94,7 @@ class PostPagesTests(TestCase):
         """Шаблон post_create сформирован с правильным контекстом."""
         response = testing_pages = (
             f'/posts/{PostPagesTests.post.pk}/edit/',
-             '/create/',
+            '/create/',
         )
         for url in testing_pages:
             with self.subTest(url=url):

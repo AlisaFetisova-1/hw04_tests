@@ -4,6 +4,7 @@ from django.urls import reverse
 from django import forms
 
 from posts.models import Group, Post, User
+from posts.forms import PostForm
 
 User = get_user_model()
 
@@ -92,14 +93,27 @@ class PostPagesTests(TestCase):
 
     def test_post_create_page_show_correct_context(self):
         """Шаблон post_create сформирован с правильным контекстом."""
-        response = self.authorized_client.get(reverse('posts:post_create'))
-        form_fields = {
-            'text': forms.fields.CharField,
-            'group': forms.fields.ChoiceField}
-        for value, expected in form_fields.items():
-            with self.subTest(value=value):
-                form_field = response.context.get('form').fields.get(value)
-                self.assertIsInstance(form_field, expected)
+        response = testing_pages = (
+            f'/posts/{PostPagesTests.post.pk}/edit/',
+            f'/create/',
+        )
+        for url in testing_pages:
+            with self.subTest(url=url):
+                response = self.authorized_client.get(url)
+                self.assertIsInstance(
+                    response.context['form'],
+                    PostForm
+                )
+                if 'edit' in url:
+                    self.assertEqual(
+                        response.context['is_edit'],
+                        True
+                    )
+                    self.assertEqual(
+                        response.context['post'],
+                        PostPagesTests.post
+                    )
+                
 
     def test_paginator(self):
         bulk_posts = []

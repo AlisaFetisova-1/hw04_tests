@@ -23,7 +23,9 @@ class PostFormTests(TestCase):
         '''Валидная форма создает новую запись в базе данных'''
         posts_count = Post.objects.count()
         form_data = {'text': 'Текст записанный в форму',
-                     'group': self.group.id}
+                     'group': self.group.id,
+                     #'image': '',
+                     }
         response = self.authorized_client.post(reverse('posts:post_create'),
                                                data=form_data,
                                                follow=True)
@@ -36,7 +38,12 @@ class PostFormTests(TestCase):
         self.assertEqual(Post.objects.count(),
                          posts_count + 1,
                          )
+        #self.assertNotEqual(Post.objects.first().image==form_data['image'],
+        # 'Пользователь не может изменить image поста')
 
+    #def test_show_image_index(self):
+        #response = self.authorized_client.post(число чего-то??)
+        #self.assertEqual(response.context['post'],self.post)
     def test_edit_post(self):
         """ Валидная форма изменяет запись в Пост"""
         self.post = Post.objects.create(text='Тестовый текст',

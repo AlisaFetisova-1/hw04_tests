@@ -77,4 +77,9 @@ def post_edit(request, post_id):
         'is_edit': True,
         'post': post,
     }
+    form = PostForm(
+        request.POST or None,
+        files=request.FILES or None,
+        instance=post
+        )
     return render(request, 'posts/create_post.html', context)

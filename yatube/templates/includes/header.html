@@ -22,15 +22,15 @@
         <li class="nav-item">
           <a class="nav-link {% if view_name  == 'about:tech' %}active{% endif %}" href="{% url 'about:tech' %}">Технологии</a>
         </li>
-        {% if users.is_authenticated %}
+        {% if user.is_authenticated %}
         <li class="nav-item"> 
-          <a class="nav-link  {% if view_name  == 'about:tech' %}active{% endif %}" href="{% url 'about:create_post' %}">Новая запись</a>
+          <a class="nav-link  {% if view_name  == 'about:tech' %}active{% endif %}" href="{% url 'posts:post_create' %}">Новая запись</a>
         </li>
         <li class="nav-item"> 
-          <a class="nav-link link-light {% if view_name  == 'posts:post_crtate' %}active{% endif %}" href="{% url 'posts:post_crtate' %}">Изменить пароль</a>
+          <a class="nav-link link-light {% if view_name  == 'posts:post_crtate' %}active{% endif %}" href="{% url 'posts:post_create' %}">Изменить пароль</a>
         </li>
         <li class="nav-item"> 
-          <a class="nav-link link-light {% if view_name  == 'auth:logout' %}active{% endif %}" href="{% url 'auth:logout' %}">Выйти</a>
+          <a class="nav-link link-light {% if view_name  == 'users:logout' %}active{% endif %}" href="{% url 'users:logout' %}">Выйти</a>
         </li>
         <li>
           Пользователь: {{ user.username }}

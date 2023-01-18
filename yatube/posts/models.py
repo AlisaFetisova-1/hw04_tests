@@ -52,3 +52,35 @@ class Post(models.Model):
         verbose_name = 'Пост'
         verbose_name_plural = 'Посты'
 
+class Comment(models.Model):
+
+    post = models.ForeignKey('Post',
+                             on_delete=models.CASCADE,
+                             related_name='comments',
+                             verbose_name='Текст поста',
+                             blank=True,
+                             null=True)
+    author = models.ForeignKey(User,
+                               on_delete=models.CASCADE,
+                               related_name='comments',
+                               verbose_name='Автор')
+    text = models.TextField(verbose_name='Комментарий',
+                            help_text='Напишите комментарий')
+
+    class Meta:
+        
+        verbose_name = 'Комментарий'
+        verbose_name_plural = 'Комментарии'
+
+class Follow(models.Model):
+    user = models.ForeignKey(User, related_name='follower',
+                             on_delete=models.CASCADE)
+    author = models.ForeignKey(User, related_name='following',
+                               on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ('-author',)
+        verbose_name = 'Лента автора'
+        verbose_name_plural = 'Лента авторов'
+        constraints = [models.UniqueConstraint(
+            fields=['user', 'author'], name='unique_members')]

@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
 from django.urls import reverse
 
-from posts.models import Group, Post, User
+from posts.models import Group, Post, User, Comment, Follow
 from posts.forms import PostForm
 
 User = get_user_model()
@@ -138,3 +138,38 @@ class PostPagesTests(TestCase):
                     len(response.context['page_obj']), 10,
                     'Количество постов на первой странице не равно десяти'
                 )
+
+
+class CommentTest(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.user = User.objects.create_user(username='auth1')
+        cls.user2 = User.objects.create_user(username='auth2')
+
+    def setUp(self):
+        self.guest_client = Client()
+        self.authorized_client = Client()
+        self.authorized_client.force_login(self.user)
+        self.group = Group.objects.create(title='Тестовая группа',
+                                          slug='test_group')
+        self.post = Post.objects.create(text='Тестовый текст',
+                                        group=self.group,
+                                        author=self.user)
+
+    def test_post_detail_page_show_correct_context(self):
+        """Шаблон post_detail сформирован с
+           правильным контекстом комментария."""
+        self.comment = Comment.objects.create(post_id=self.post.id,
+                                              author=self.user,
+                                              text='Тестовый коммент')
+        response = self.authorized_client.get(
+            reverse('posts:post_detail', kwargs={'post_id': self.post.id}))
+        comments = {response.context['comments'][0].text: 'Тестовый коммент',
+                    response.context['comments'][0].author: self.user.username
+                    }
+        for value, expected in comments.items():
+            self.assertEqual(comments[value], expected)
+        self.assertTrue(response.context['form'], 'форма получена')
+
+

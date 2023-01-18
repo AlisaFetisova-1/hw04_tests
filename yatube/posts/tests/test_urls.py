@@ -64,3 +64,11 @@ class StaticURLTests(TestCase):
         for page in pages:
             response = self.guest_client.get(page)
             self.assertEqual(response.status_code, HTTPStatus.OK)
+
+    def test_404(self):
+        """Запрос несуществующей страницы"""
+        response = self.guest_client.get('/test-no-popular', follow=True)
+        error_name = 'Ошибка: unexisting_url не работает'
+        self.assertEquals(response.status_code,
+                          HTTPStatus.NOT_FOUND,
+                          error_name)
